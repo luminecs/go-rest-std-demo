@@ -20,3 +20,10 @@ type homeHandler struct {
 func (h *homeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("This is my home page"))
 }
+
+type RecipesHandler struct {
+}
+
+func (h RecipesHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("This is my recipe page"))
+}
