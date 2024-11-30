@@ -1,6 +1,7 @@
 package main
 
 import (
+	"go-rest-std-demo/pkg/recipes"
 	"net/http"
 	"regexp"
 )
@@ -26,7 +27,16 @@ func (h *homeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("This is my home page"))
 }
 
+// RecipesHandler implements http.Handler and
+// dispatches request to the store
 type RecipesHandler struct {
+	store recipeStore
+}
+
+func NewRecipesHandler(s recipeStore) *RecipesHandler {
+	return &RecipesHandler{
+		store: s,
+	}
 }
 
 func (h *RecipesHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -61,3 +71,11 @@ var (
 	RecipeRe       = regexp.MustCompile(`^/recipes/*$`)
 	RecipeReWithID = regexp.MustCompile(`^/recipes/([a-z0-9]+(?:-[a-z0-9]+)+)$`)
 )
+
+type recipeStore interface {
+	Add(name string, recipe recipes.Recipe) error
+	Get(name string) (recipes.Recipe, error)
+	Update(name string, recipe recipes.Recipe) error
+	List() (map[string]recipes.Recipe, error)
+	Remove(name string) error
+}
